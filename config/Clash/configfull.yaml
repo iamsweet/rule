@@ -14,10 +14,10 @@ proxy-providers:
 global-ua: clash
     
 # 全局配置
-port: 7890
+port: 7892
 socks-port: 7891
-redir-port: 7892
-mixed-port: 7893
+redir-port: 7893
+mixed-port: 7890
 tproxy-port: 7894
 ipv6: false
 allow-lan: true
@@ -97,6 +97,11 @@ dns:
   fake-ip-filter:
     - "+.lan"
     - "+.local"
+    - time.*.com
+    - ntp.*.com
+    - +.market.xiaomi.com
+    - +.services.googleapis.cn
+    - +.xn--ngstr-lra8j.com
     - geosite:private
     - geosite:cn
   default-nameserver:
@@ -127,6 +132,7 @@ pr: &pr {type: select, proxies: [🚀 节点选择, 🔯 香港故转, 🔯 日�
 # 策略组
 proxy-groups:
   - {name: 🚀 节点选择, type: select, proxies: [🔯 香港故转, 🔯 日本故转, ♻️ 香港自动, ♻️ 日本自动, ♻️ 美国自动, ♻️ 自动选择, 🇭🇰 香港节点, 🇯🇵 日本节点, 🇺🇲 美国节点, 🌐 全部节点, 🟢 直连]}
+  - {name: 🚀 自定义,!!merge <<: *pr}
   - {name: 📹 YouTube,!!merge <<: *pr}
   - {name: 🍀 Google,!!merge <<: *pr}
   - {name: 🤖 ChatGPT,!!merge <<: *pr}
@@ -153,6 +159,8 @@ proxy-groups:
   - {name: 🌐 全部节点, type: select, include-all: true}
 rules:
   - RULE-SET,private_domain,🟢 直连
+  - RULE-SET,directmujj,🎯 全球直连
+  - RULE-SET,proxymujj,🚀 自定义
   - RULE-SET,apple_domain,🍎 Apple
   - RULE-SET,proxylite,🚀 节点选择
   - RULE-SET,ai,🤖 ChatGPT
@@ -180,6 +188,8 @@ rule-anchor:
   class: &class {type: http, interval: 86400, behavior: classical, format: text}
 rule-providers: 
   private_domain: {!!merge <<: *domain, url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/private.mrs"}
+  proxymujj: {!!merge <<: *class, url: "https://raw.githubusercontent.com/iamsweet/mujj_clash/refs/heads/main/proxy.list"}
+  directmujj: {!!merge <<: *class, url: "https://raw.githubusercontent.com/iamsweet/mujj_clash/refs/heads/main/direct.list"}  
   proxylite: {!!merge <<: *class, url: "https://raw.githubusercontent.com/qichiyuhub/rule/refs/heads/master/ProxyLite.list"}
   ai: {!!merge <<: *class, url: "https://raw.githubusercontent.com/qichiyuhub/rule/refs/heads/master/AI.list"}
   youtube_domain: {!!merge <<: *domain, url: "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/youtube.mrs"}
